@@ -1,1 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Kittu 💖</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Pacifico&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #fff);
+      color: #333;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    /* PASSWORD GATE */
+    #passwordGate {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #ffd6e8, #fff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .gate-card {
+      background: white;
+      padding: 35px 30px;
+      border-radius: 30px;
+      box-shadow: 0 20px 50px rgba(255,105,180,0.3);
+      width: 300px;
+    }
+
+    .gate-card h2 {
+      font-family: 'Pacifico', cursive;
+      color: #ff69b4;
+      margin-bottom: 10px;
+    }
+
+    .pin-display {
+      letter-spacing: 10px;
+      font-size: 1.6rem;
+      margin: 20px 0;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .keypad button {
+      padding: 16px;
+      border-radius: 50%;
+      border: none;
+      background: #ffb6d9;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .keypad button:hover { background: #ff69b4; }
+
+    #errorMsg {
+      color: #ff4f9a;
+      display: none;
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+
+    /* FLOATING HEARTS */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 20px;
+      animation: floatUp 6s linear infinite;
+      color: #ff69b4;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-110vh); opacity: 0; }
+    }
+
+    header {
+      padding: 80px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+
+    h2 { font-size: 2rem; margin-bottom: 20px; }
+
+    p {
+      font-size: 1.1rem;
+      max-width: 720px;
+      margin: 0 auto 20px;
+      line-height: 1.7;
+    }
+
+    .button {
+      padding: 14px 30px;
+      background: #ff69b4;
+      color: white;
+      border-radius: 30px;
+      cursor: pointer;
+      display: inline-block;
+      margin: 25px 0;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .button:hover {
+      transform: scale(1.05);
+      background: #ff4fa3;
+    }
+
+    section { padding: 80px 20px; display: none; }
+
+    .counter { font-size: 1.6rem; font-weight: 600; }
+
+    .postcards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .card { width: 260px; height: 360px; perspective: 1000px; cursor: pointer; }
+
+    .card-inner {
+      width: 100%; height: 100%; transition: transform 0.8s;
+      transform-style: preserve-3d; position: relative;
+    }
+
+    .card.flipped .card-inner { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+      border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .card-front img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: 20px;
+    }
+
+    .card-back {
+      background: #fffafc; transform: rotateY(180deg); padding: 22px;
+      box-sizing: border-box; display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; line-height: 1.5;
+    }
+
+    .question {
+      margin: 20px auto; max-width: 720px; background: #fff; padding: 20px;
+      border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
+
+    .answer { margin-top: 15px; display: none; color: #555; }
+    .question.open .answer { display: block; }
+
+    audio { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- PASSWORD GATE -->
+  <div id="passwordGate">
+    <div class="gate-card">
+      <h2>Hi Kittu 💖</h2>
+      <p>Enter our secret code</p>
+      <div class="pin-display" id="pinDisplay">• • • •</div>
+      <div class="keypad">
+        <button onclick="pressKey('1')">1</button>
+        <button onclick="pressKey('2')">2</button>
+        <button onclick="pressKey('3')">3</button>
+        <button onclick="pressKey('4')">4</button>
+        <button onclick="pressKey('5')">5</button>
+        <button onclick="pressKey('6')">6</button>
+        <button onclick="pressKey('7')">7</button>
+        <button onclick="pressKey('8')">8</button>
+        <button onclick="pressKey('9')">9</button>
+        <button onclick="clearPin()">←</button>
+        <button onclick="pressKey('0')">0</button>
+        <button onclick="submitPin()">✔</button>
+      </div>
+      <div id="errorMsg">Wrong code 🥺 try again</div>
+    </div>
+  </div>
+
+  <!-- MUSIC -->
+  <audio id="bgMusic" loop>
+    <source src="cant-help-falling-in-love.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- INTRO -->
+  <header>
+    <h1>Hi Kittu 💕</h1>
+    <p>Get ready for this journey through the past <strong>9 years</strong> of us &lt;3</p>
+    <div class="button" onclick="startJourney()">Start</div>
+  </header>
+
+  <!-- COUNTER -->
+  <section id="counterSection">
+    <h2>How long have we been together? ⏳</h2>
+    <div class="counter" id="counter"></div>
+    <div class="button" onclick="showSection('memoriesSection')">Highlights of Us 💖</div>
+  </section>
+
+  <!-- MEMORIES -->
+  <section id="memoriesSection">
+    <h2>Highlights of Us 💌</h2>
+    <p>(Click each postcard)</p>
+    <div class="postcards">
+      <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><img src="memory1.jpg"></div><div class="card-back">THE ONE.</div></div></div>
+      <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><img src="memory2.jpg"></div><div class="card-back">No matter where we were, being with you always felt like home.</div></div></div>
+      <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><img src="memory3.jpg"></div><div class="card-back">One of my favourite days, because I laughed till my cheeks hurt.</div></div></div>
+      <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><img src="memory4.jpg"></div><div class="card-back">Every picture reminds me how lucky I am to have you.</div></div></div>
+      <div class="card" onclick="flipCard(this)"><div class="card-inner"><div class="card-front"><img src="memory5.jpg"></div><div class="card-back">Nine years later, and I’d still choose you every single time.</div></div></div>
+    </div>
+    <div class="button" onclick="showSection('triviaSection')">Relationship Trivia 🧠</div>
+  </section>
+
+  <!-- TRIVIA -->
+  <section id="triviaSection">
+    <h2>How well do you know us? 💭</h2>
+
+    <div class="question" onclick="toggleAnswer(this)"><strong>Where did I first see you?</strong><div class="answer">In school — I was with Anannya, and you were walking with your brother.</div></div>
+    <div class="question" onclick="toggleAnswer(this)"><strong>Which country did we badly want to move to when we were in middle school?</strong><div class="answer">Australia 🇦🇺</div></div>
+    <div class="question" onclick="toggleAnswer(this)"><strong>Who said "I love you" first?</strong><div class="answer">Kittu 💖</div></div>
+    <div class="question" onclick="toggleAnswer(this)"><strong>What was the cute thing you used to call me when we were in school?</strong><div class="answer">Little girl 🥹</div></div>
+    <div class="question" onclick="toggleAnswer(this)"><strong>What's one thing we used to do religiously during midnight chats?</strong><div class="answer">Pinky promises 🤞</div></div>
+
+    <div class="button" onclick="showSection('letterSection')">One Last Thing 💖</div>
+  </section>
+
+  <!-- LETTER -->
+  <section id="letterSection">
+    <h2>For You, Always 💗</h2>
+    <p id="typedLetter"></p>
+  </section>
+
+  <script>
+    /* PASSWORD */
+    const CORRECT_PASSWORD = "1423";
+    let enteredPin = "";
+
+    function pressKey(n) {
+      if (enteredPin.length < 4) {
+        enteredPin += n;
+        updateDisplay();
+      }
+    }
+
+    function clearPin() {
+      enteredPin = enteredPin.slice(0, -1);
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById('pinDisplay').innerText = enteredPin.padEnd(4,'•').split('').join(' ');
+    }
+
+    function submitPin() {
+      if (enteredPin === CORRECT_PASSWORD) {
+        document.getElementById('passwordGate').style.display = 'none';
+        startHearts();
+      } else {
+        document.getElementById('errorMsg').style.display = 'block';
+        enteredPin = "";
+        updateDisplay();
+      }
+    }
+
+    /* HEARTS */
+    function startHearts() {
+      setInterval(() => {
+        const h = document.createElement('div');
+        h.className = 'heart';
+        h.innerText = '💖';
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.fontSize = Math.random() * 20 + 15 + 'px';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 6000);
+      }, 500);
+    }
+
+    function startJourney() {
+      document.getElementById('bgMusic').play();
+      showSection('counterSection');
+    }
+
+    function showSection(id) {
+      const s = document.getElementById(id);
+      s.style.display = 'block';
+      s.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function toggleAnswer(q) { q.classList.toggle('open'); }
+    function flipCard(c) { c.classList.toggle('flipped'); }
+
+    const startDate = new Date(2016, 11, 23);
+    function updateCounter() {
+      const now = new Date();
+      let years = now.getFullYear() - startDate.getFullYear();
+      if (now < new Date(now.getFullYear(), 11, 23)) years--;
+      let last = new Date(startDate);
+      last.setFullYear(startDate.getFullYear() + years);
+      let diff = now - last;
+      document.getElementById('counter').innerHTML =
+        `${years} years, ${Math.floor(diff/86400000)} days<br>${Math.floor(diff/3600000)%24} hours, ${Math.floor(diff/60000)%60} minutes, ${Math.floor(diff/1000)%60} seconds ❤️`;
+    }
+    setInterval(updateCounter, 1000); updateCounter();
+
+    const letterText = `Happy 9 years Kittu bb!! 💖\n\nI can't believe where we started and how we're here now, all the ups and downs and millions of memories created. I can't tell you how much you mean to me but I just know I can't function normally and live without you in my life. I mean it when I say I always need you bb.\n\nYou make me the happiest but also the saddest when we fight. But I know we'll make it because we will get better for each other. You're always the person I laugh the most with, cry with, tell everything to, want to go on adventures with and make the most out of life with.\n\nI hope all our bucket list stuff comes true, just like how we're living our teenage dream life. I want to have it all with you only. I love you so much. You're the one for me.\n\nHere's to 9 years and many more to come! <3`;
+
+    let i = 0; let started = false;
+    function typeLetter() {
+      if (i < letterText.length) {
+        document.getElementById('typedLetter').innerHTML += letterText[i] === '\n' ? '<br>' : letterText[i];
+        i++; setTimeout(typeLetter, 40);
+      }
+    }
+
+    const obs = new IntersectionObserver(e => {
+      if (e[0].isIntersecting && !started) { started = true; typeLetter(); }
+    }, { threshold: 0.3 });
+
+    obs.observe(document.getElementById('letterSection'));
+  </script>
+</body>
+</html>
